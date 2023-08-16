@@ -5,8 +5,9 @@ using UnityEngine;
 public class CharacterTracer : MonoBehaviour
 {
     [SerializeField] public GameObject player;
+    [SerializeField] public float zedPosition;
     void Update()
     {
-        transform.position = new Vector3(player.transform.position.x, player.transform.position.y, -10);
+        transform.position = new Vector3(player.transform.position.x, player.transform.position.y, zedPosition);
     }
 }

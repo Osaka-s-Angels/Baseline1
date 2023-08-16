@@ -6,6 +6,7 @@ public class CharacterMovement : MonoBehaviour
 {
     #region Components
     private Rigidbody2D rb;
+
     private TrailRenderer trailRenderer;
     private BoxCollider2D boxCollider;
     private SpriteRenderer spriteRenderer;
@@ -15,6 +16,19 @@ public class CharacterMovement : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private Camera cam;
     [SerializeField] private float moveSpeed;
+
+    private BoxCollider2D boxCollider;
+    private SpriteRenderer spriteRenderer;
+    #endregion
+
+    #region Serialized Fields
+    [SerializeField] private Transform handsAndWeapon;
+    [SerializeField] private Camera cam;
+    [SerializeField] private float moveSpeed;
+    #endregion
+
+    #region Private Fields
+
     private Vector2 movement;
     private Vector2 mousePos;
     private bool isFacingRight;
@@ -22,6 +36,7 @@ public class CharacterMovement : MonoBehaviour
     private float dir;
     private bool isDirNegative;
     #endregion
+
     
     #region Dashing
     [Header("Dashing")]
@@ -31,6 +46,8 @@ public class CharacterMovement : MonoBehaviour
     private bool isDashing;
     private bool canDash;
     #endregion
+
+
 
     void Start()
     {
@@ -51,6 +68,11 @@ public class CharacterMovement : MonoBehaviour
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 
+
+
+;
+        
+
         mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
 
         mouseX = mousePos.x;
@@ -59,17 +81,22 @@ public class CharacterMovement : MonoBehaviour
        
         if (isFacingRight && dir < 0)
         {
-            Turn();
+            rb.transform.Rotate(0, 180, 0);
+            isFacingRight = false;
         }
         else if(!isFacingRight && dir > 0)
         {
-            Turn();
+            rb.transform.Rotate(0, -180, 0);
+            isFacingRight = true;
         }
+
         if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
         {
               StartCoroutine(Dash());
         }
  
+
+
 
     }
 
@@ -82,6 +109,7 @@ public class CharacterMovement : MonoBehaviour
         rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
        
 
+
     } 
 
     private void Turn()
@@ -91,6 +119,12 @@ public class CharacterMovement : MonoBehaviour
         transform.localScale = scale;
 
         isFacingRight = !isFacingRight;
+
+        Vector2 lookDir = mousePos - rb.position;
+        float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
+        handsAndWeapon.rotation = Quaternion.Euler(0f, 0f, angle);
+    
+
     }
 
     private IEnumerator Dash()
